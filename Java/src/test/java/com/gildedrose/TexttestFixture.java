@@ -1,8 +1,41 @@
 package com.gildedrose;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class TexttestFixture {
-    public static void main(String[] args) {
-        System.out.println("OMGHAI!");
+
+    @Test
+    void outputTest() throws IOException {
+        String actualOutput = runSystem();
+        String expectedOutput = null;
+        BufferedReader reader = new BufferedReader(new FileReader("src/test/resources/output.txt"));
+        String line = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        String ls = System.getProperty("line.separator");
+
+        try {
+            while((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(ls);
+            }
+            expectedOutput = stringBuilder.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            reader.close();
+        }
+        Assertions.assertEquals(expectedOutput,actualOutput);
+    }
+
+    private static String runSystem() {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("OMGHAI!");
+        stringBuilder.append("\r\n");
 
         Item[] items = new Item[] {
                 new Item("+5 Dexterity Vest", 10, 20), //
@@ -19,19 +52,21 @@ public class TexttestFixture {
         GildedRose app = new GildedRose(items);
 
         int days = 2;
-        if (args.length > 0) {
-            days = Integer.parseInt(args[0]) + 1;
-        }
 
         for (int i = 0; i < days; i++) {
-            System.out.println("-------- day " + i + " --------");
-            System.out.println("name, sellIn, quality");
+            stringBuilder.append("-------- day " + i + " --------");
+            stringBuilder.append("\r\n");
+            stringBuilder.append("name, sellIn, quality");
+            stringBuilder.append("\r\n");
             for (Item item : items) {
-                System.out.println(item);
+                stringBuilder.append(item);
+                stringBuilder.append("\r\n");
             }
-            System.out.println();
+            stringBuilder.append("\r\n");
             app.updateQuality();
         }
+        return stringBuilder.toString();
     }
-
 }
+
+
